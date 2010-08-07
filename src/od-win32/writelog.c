@@ -4,7 +4,7 @@
 
 #include <windows.h>
 
-#define SHOW_CONSOLE 0
+#define SHOW_CONSOLE 1
 
 static int consoleopen = 0;
 static HANDLE stdinput;

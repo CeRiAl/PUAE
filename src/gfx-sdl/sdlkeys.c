@@ -100,7 +100,9 @@ static int kc_decode (int keysym)
 	case SDLK_RMETA: 	return AK_RAMI;
 	case SDLK_LMETA: 	return AK_LAMI;
 	case SDLK_RETURN: 	return AK_RET;
-	case SDLK_SPACE: 	return AK_SPC;
+//	case SDLK_SPACE: 	return AK_SPC;
+	case SDLK_SPACE:	return AKS_ENTERGUI;
+
 	case SDLK_LSHIFT: 	return AK_LSH;
 	case SDLK_RSHIFT: 	return AK_RSH;
 	case SDLK_ESCAPE: 	return AK_ESC;

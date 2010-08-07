@@ -1678,6 +1678,7 @@ STATIC_INLINE void raw_inc_sp(int off)
 
 #ifdef NATMEM_OFFSET
 #ifdef _WIN32 // %%% BRIAN KING WAS HERE %%%
+#include <windows.h>
 #include <winbase.h>
 #else
 #ifndef __USE_GNU

@@ -3,8 +3,9 @@
 
 #include "options.h"
 #include "SDL.h"
-#include "gp2x.h"
 #include <stdlib.h>
+
+#include <SDL_TouchUI.h>
 
 extern void write_text(int x, int y, char* txt);
 extern void blit_image(SDL_Surface* img, int x, int y);
@@ -18,13 +19,17 @@ extern char msg_status[50];
 int prefz (int parametre) {
 	SDL_Event event;
 
-    	pMenu_Surface = SDL_LoadBMP("images/menu_tweak.bmp");
+	if (display == NULL) {
+		gui_init();
+	}
+
+    pMenu_Surface = SDL_LoadBMP("images/menu_tweak.bmp");
 	int prefsloopdone = 0;
 	int kup = 0;
 	int kdown = 0;
 	int kleft = 0;
 	int kright = 0;
-	int seciliolan = 0;
+	int menuSelection = 0;
 	int deger;
 	int q;
 	int w;
@@ -48,43 +53,49 @@ int prefz (int parametre) {
 	char* p_floppy[]= {"0","100","200","300"};							//3
 	int defaults[]	= {0,0,0,0,0,0,0,0};
 
-	defaults[0] = currprefs.cpu_level;
-	if (currprefs.address_space_24 != 0) {
-		if (currprefs.cpu_level == 2) { defaults[0] = 4; }
-		if (currprefs.cpu_level == 3) { defaults[0] = 5; }
+//	defaults[0] = changed_prefs.cpu_level;
+	defaults[0] = changed_prefs.cpu_model;
+	if (changed_prefs.address_space_24 != 0) {
+//		if (changed_prefs.cpu_level == 2) { defaults[0] = 4; }
+//		if (changed_prefs.cpu_level == 3) { defaults[0] = 5; }
+		if (changed_prefs.cpu_model == 2) { defaults[0] = 4; }
+		if (changed_prefs.cpu_model == 3) { defaults[0] = 5; }
 	}
-	defaults[1] = currprefs.m68k_speed;
-	defaults[2] = currprefs.chipset_mask;
-	defaults[3] = currprefs.chipmem_size;
-	defaults[4] = currprefs.fastmem_size;
-	defaults[5] = currprefs.bogomem_size;
-	defaults[6] = currprefs.produce_sound;
-	defaults[7] = currprefs.gfx_framerate;
-	defaults[8] = currprefs.floppy_speed;
+	defaults[1] = changed_prefs.m68k_speed;
+	defaults[2] = changed_prefs.chipset_mask;
+	defaults[3] = changed_prefs.chipmem_size;
+	defaults[4] = changed_prefs.fastmem_size;
+	defaults[5] = changed_prefs.bogomem_size;
+	defaults[6] = changed_prefs.produce_sound;
+	defaults[7] = changed_prefs.gfx_framerate;
+	defaults[8] = changed_prefs.floppy_speed;
 
 	char *tmp;
 	tmp=(char*)malloc(6);
 
 	while (!prefsloopdone) {
 		while (SDL_PollEvent(&event)) {
+			SDL_TUI_HandleEvent(&event);
 			if (event.type == SDL_QUIT) {
 				prefsloopdone = 1;
 			}
 			if (event.type == SDL_JOYBUTTONDOWN) {
              			switch (event.jbutton.button) {
-					case GP2X_BUTTON_UP: seciliolan--; break;
-					case GP2X_BUTTON_DOWN: seciliolan++; break;
+#if 0
+					case GP2X_BUTTON_UP: menuSelection--; break;
+					case GP2X_BUTTON_DOWN: menuSelection++; break;
 					case GP2X_BUTTON_LEFT: kleft = 1; break;
 					case GP2X_BUTTON_RIGHT: kright = 1; break;
 					case GP2X_BUTTON_SELECT: prefsloopdone = 1; break;
 					case GP2X_BUTTON_B: prefsloopdone = 1; break;
+#endif
 				}
 			}
       			if (event.type == SDL_KEYDOWN) {
     				switch (event.key.keysym.sym) {
 					case SDLK_ESCAPE:	prefsloopdone = 1; break;
-				 	case SDLK_UP:		seciliolan--; break;
-					case SDLK_DOWN:		seciliolan++; break;
+				 	case SDLK_UP:		menuSelection--; break;
+					case SDLK_DOWN:		menuSelection++; break;
 					case SDLK_LEFT:		kleft = 1; break;
 					case SDLK_RIGHT:	kright = 1; break;
 					case SDLK_b:		prefsloopdone = 1; break;
@@ -93,30 +104,30 @@ int prefz (int parametre) {
 			}
 		}
 		if (kleft == 1) {
-			defaults[seciliolan]--;
+			defaults[menuSelection]--;
 			kleft = 0;
 
-			if (seciliolan == 1) { 
+			if (menuSelection == 1) { 
 				//cpu_speed_change = 1; 
 			}
-			if (seciliolan == 6) { 
+			if (menuSelection == 6) { 
 				//snd_change = 1; 
 			}
-			if (seciliolan == 7) { 
+			if (menuSelection == 7) { 
 				//gfx_frameskip_change = 1; 
 			}
 		}
 		if (kright == 1) {
-			defaults[seciliolan]++;
+			defaults[menuSelection]++;
 			kright = 0;
 
-			if (seciliolan == 1) { 
+			if (menuSelection == 1) { 
 				//cpu_speed_change = 1; 
 			}
-			if (seciliolan == 6) { 
+			if (menuSelection == 6) { 
 				//snd_change = 1; 
 			}
-			if (seciliolan == 7) { 
+			if (menuSelection == 7) { 
 				//gfx_frameskip_change = 1; 
 			}
 		}
@@ -141,8 +152,8 @@ int prefz (int parametre) {
 		if (defaults[7] > 3) defaults[7] = 0;	//frameskip
 		if (defaults[8] > 3) defaults[8] = 0;	//floppy
 
-		if (seciliolan < 0) { seciliolan = 8; }
-		if (seciliolan > 8) { seciliolan = 0; }
+		if (menuSelection < 0) { menuSelection = 8; }
+		if (menuSelection > 8) { menuSelection = 0; }
 	// background
 		SDL_BlitSurface (pMenu_Surface,NULL,tmpSDLScreen,NULL);
 
@@ -150,7 +161,7 @@ int prefz (int parametre) {
 		int sira = 0;
 		int skipper = 0;
 		for (q=0; q<9; q++) {
-			if (seciliolan == q) {
+			if (menuSelection == q) {
 				text_color.r = 150; text_color.g = 50; text_color.b = 50;
 			}
 			write_text (10,skipper+25+(sira*10),prefs[q]); //
@@ -181,7 +192,9 @@ int prefz (int parametre) {
 
 		write_text (25,6,msg); //
 		write_text (25,240,msg_status); //
+
 		SDL_BlitSurface (tmpSDLScreen,NULL,display,NULL);
+		SDL_TUI_UpdateAll();
 		SDL_Flip(display);
 	} //while done
 /*

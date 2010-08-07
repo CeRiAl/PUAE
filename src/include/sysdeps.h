@@ -17,7 +17,7 @@
 
 #define ECS_DENISE
 
-#ifdef JIT
+#if defined(JIT) && !defined(_WIN32)
 #define NATMEM_OFFSET natmem_offset
 #else
 #undef NATMEM_OFFSET

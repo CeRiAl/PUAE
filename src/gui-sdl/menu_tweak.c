@@ -1,7 +1,7 @@
 #include "SDL.h"
-#include "gp2x.h"
 #include <stdlib.h>
-#include "gp2x-cpuctrl/cpuctrl.h"
+
+#include <SDL_TouchUI.h>
 
 extern void write_text(int x, int y, char* txt);
 extern void blit_image(SDL_Surface* img, int x, int y);
@@ -22,7 +22,7 @@ int tweakz (int parametre) {
 	int kleft = 0;
 	int kright = 0;
 	int kb = 0;
-	int seciliolan = 0;
+	int menuSelection = 0;
 	int q;
 
 	char* tweaks[]		= {"CPU Mhz","tRC","tRAS","tWR","tMRD","tRFC","tRP","tRCD","PLL","Timing","Default (200mhz)","Default (266mhz)","Evil Dragon (266mhz)"};
@@ -32,6 +32,10 @@ int tweakz (int parametre) {
 	int evil_tweak[]	= {266,6,4,1,1,1,2,2,1,1};
 	char *tmp;
 	tmp=(char*)malloc(5);
+
+	if (display == NULL) {
+		gui_init();
+	}
 
 #ifdef GP2X
 	unsigned sysfreq=0;
@@ -52,22 +56,25 @@ int tweakz (int parametre) {
 
 	while (!tweakloopdone) {
 		while (SDL_PollEvent(&event)) {
+			SDL_TUI_HandleEvent(&event);
 			if (event.type == SDL_QUIT) { tweakloopdone = 1; }
 			if (event.type == SDL_JOYBUTTONDOWN) {
              			switch (event.jbutton.button) {
-					case GP2X_BUTTON_UP: seciliolan--; break;
-					case GP2X_BUTTON_DOWN: seciliolan++; break;
+#if 0
+					case GP2X_BUTTON_UP: menuSelection--; break;
+					case GP2X_BUTTON_DOWN: menuSelection++; break;
 					case GP2X_BUTTON_LEFT: kleft = 1; break;
 					case GP2X_BUTTON_RIGHT: kright = 1; break;
 					case GP2X_BUTTON_SELECT: tweakloopdone = 1; break;
 					case GP2X_BUTTON_B: kb =1; break;
+#endif
 				}
 			}
       			if (event.type == SDL_KEYDOWN) {
     				switch (event.key.keysym.sym) {
 					case SDLK_ESCAPE:	tweakloopdone = 1; break;
-				 	case SDLK_UP:		seciliolan--; break;
-					case SDLK_DOWN:		seciliolan++; break;
+				 	case SDLK_UP:		menuSelection--; break;
+					case SDLK_DOWN:		menuSelection++; break;
 					case SDLK_LEFT:		kleft = 1; break;
 					case SDLK_RIGHT:	kright = 1; break;
 					case SDLK_b:		kb = 1; break;
@@ -76,16 +83,17 @@ int tweakz (int parametre) {
 			}
 		}
 		if (kb == 1) {
-			if (seciliolan == 10) {
+			if (menuSelection == 10) {
 				for (q=0; q<10;q++) { defaults[q] = def_slow_tweak[q]; }
 			}
-			if (seciliolan == 11) {
+			if (menuSelection == 11) {
 				for (q=0; q<10;q++) { defaults[q] = def_fast_tweak[q]; }
 			}
-			if (seciliolan == 12) {
+			if (menuSelection == 12) {
 				for (q=0; q<10;q++) { defaults[q] = evil_tweak[q]; }
 			}
-			if (seciliolan < 10) {
+			if (menuSelection < 10) {
+#if 0
 				//apply
 				//printf("FLCK: %d",0);			set_CAS(0);
 				printf("FLCK: %d",defaults[0]);		set_FCLK(defaults[0]);
@@ -101,16 +109,17 @@ int tweakz (int parametre) {
 				} else {
 					printf("ULCD: %d",defaults[9]);	set_add_ULCDCLK(defaults[9]-1);
 				}
+#endif
 				tweakloopdone = 1;
 			}
 			kb = 0;
 		}
 		if (kleft == 1) {
-			if (seciliolan < 10) { defaults[seciliolan]--; }
+			if (menuSelection < 10) { defaults[menuSelection]--; }
 			kleft = 0;
 		}
 		if (kright == 1) {
-			if (seciliolan < 10) { defaults[seciliolan]++; }
+			if (menuSelection < 10) { defaults[menuSelection]++; }
 			kright = 0;
 		}
 
@@ -135,8 +144,8 @@ int tweakz (int parametre) {
 		if (defaults[7] == 0) defaults[7] = 16; //trcd
 		if (defaults[8] == 11) defaults[7] = -6; //timing
 
-		if (seciliolan < 0) { seciliolan = 12; }
-		if (seciliolan > 12) { seciliolan = 0; }
+		if (menuSelection < 0) { menuSelection = 12; }
+		if (menuSelection > 12) { menuSelection = 0; }
 
 	// background
 		SDL_BlitSurface (pMenu_Surface,NULL,tmpSDLScreen,NULL);
@@ -146,7 +155,7 @@ int tweakz (int parametre) {
 		int skipper = 0;
 		for (q=0; q<13; q++) {
 			if (q == 10) { skipper = 30; }
-			if (seciliolan == q) {
+			if (menuSelection == q) {
 				text_color.r = 255; text_color.g = 100; text_color.b = 100;
 			}
 			write_text (10,skipper+25+(sira*10),tweaks[q]); //
@@ -162,7 +171,7 @@ int tweakz (int parametre) {
 				}
 				write_text (100,skipper+25+(sira*10),tmp);
 			}
-			if (seciliolan == q) {
+			if (menuSelection == q) {
 				text_color.r = 0; text_color.g = 0; text_color.b = 0;
 			}
 			sira++;
@@ -170,7 +179,9 @@ int tweakz (int parametre) {
 
 		write_text (25,3,msg);
 		write_text (15,228,msg_status);
+
 		SDL_BlitSurface (tmpSDLScreen,NULL,display,NULL);
+		SDL_TUI_UpdateAll();
 		SDL_Flip(display);
 	} //while done
 

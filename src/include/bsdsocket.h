@@ -27,7 +27,8 @@ extern void deinit_socket_layer (void);
 
 #define MAXADDRLEN 256
 
-#ifdef _WIN32
+//#ifdef _WIN32
+#if 0
 #define SOCKET_TYPE SOCKET
 #else
 #define SOCKET_TYPE int

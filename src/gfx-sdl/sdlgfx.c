@@ -70,6 +70,8 @@ unsigned int shading_enabled = 0;
 #include "hotkeys.h"
 #include "sdlgfx.h"
 
+#include <SDL_TouchUI.h>
+
 /* Uncomment for debugging output */
 //#define DEBUG
 #ifdef DEBUG
@@ -746,6 +748,8 @@ static void sdl_unlock_nolock (struct vidbuf_description *gfxinfo)
 
 STATIC_INLINE void sdl_flush_block_nolock (struct vidbuf_description *gfxinfo, int first_line, int last_line)
 {
+   SDL_TUI_UpdateRect (0, first_line, current_width, last_line - first_line + 1);
+
    SDL_UpdateRect (display, 0, first_line, current_width, last_line - first_line + 1);
 }
 
@@ -821,6 +825,9 @@ static void sdl_flush_clear_screen (struct vidbuf_description *gfxinfo)
     if (display) {
 		SDL_Rect rect = { 0, 0, display->w, display->h };
 		SDL_FillRect (display, &rect, SDL_MapRGB (display->format, 0,0,0));
+
+		SDL_TUI_UpdateRect (0, 0, rect.w, rect.h);
+
 		SDL_UpdateRect (display, 0, 0, rect.w, rect.h);
     }
 }
@@ -1173,6 +1180,8 @@ static int graphics_subinit (void)
     }
 #endif /* USE_GL */
 
+    SDL_TUI_Init("sdl_touchui.xml", "keyboard-off");
+
     /* Set UAE window title and icon name */
     setmaintitle ();
 
@@ -1289,7 +1298,10 @@ void handle_events (void)
 {
     SDL_Event rEvent;
 
+    //SDL_TUI_UpdateAll();
+
     while (SDL_PollEvent (&rEvent)) {
+    SDL_TUI_HandleEvent(&rEvent);
 	switch (rEvent.type) {
 	    case SDL_QUIT:
 			DEBUG_LOG ("Event: quit\n");
@@ -1403,6 +1415,8 @@ void handle_events (void)
     if (!currprefs.use_gl) {
 # endif /* USE_GL */
 	if (screen_is_picasso && refresh_necessary) {
+		SDL_TUI_UpdateRect (0, 0, picasso_vidinfo.width, picasso_vidinfo.height);
+
 	    SDL_UpdateRect (screen, 0, 0, picasso_vidinfo.width, picasso_vidinfo.height);
 	    refresh_necessary = 0;
 	    memset (picasso_invalid_lines, 0, sizeof picasso_invalid_lines);
@@ -1439,7 +1453,9 @@ void handle_events (void)
 		    updaterecs[urc].h = i - strt;
 		    urc++;
 # else
-		    SDL_UpdateRect (screen, 0, strt, picasso_vidinfo.width, i - strt);
+			SDL_TUI_UpdateRect (0, strt, picasso_vidinfo.width, i - strt);
+
+			SDL_UpdateRect (screen, 0, strt, picasso_vidinfo.width, i - strt);
 # endif
 		    strt = -1;
 		}
@@ -1447,7 +1463,9 @@ void handle_events (void)
 	    if (strt != -1)
 		abort ();
 # ifdef OPTIMIZE_UPDATE_RECS
-	    SDL_UpdateRects (screen, urc, updaterecs);
+		SDL_TUI_UpdateRects (urc, updaterecs);
+
+		SDL_UpdateRects (screen, urc, updaterecs);
 # endif
 	}
 	picasso_has_invalid_lines = 0;

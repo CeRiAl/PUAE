@@ -18,7 +18,8 @@
 static DWORD lasterror;
 
 
-#ifndef HAVE_GETTIMEOFDAY
+//#ifndef HAVE_GETTIMEOFDAY
+#if 0
 /* Our Win32 implementation of this function */
 void gettimeofday (struct timeval *tv, void *blah)
 {

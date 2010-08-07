@@ -100,7 +100,8 @@ static void show_version_full (void)
 	write_log ("Copyright 1995-2002 Bernd Schmidt\n");
 	write_log ("          1999-2011 Toni Wilen\n");
 	write_log ("          2003-2007 Richard Drummond\n");
-	write_log ("          2006-2011 Mustafa 'GnoStiC' Tufan\n\n");
+	write_log ("          2006-2011 Mustafa 'GnoStiC' Tufan\n");
+    write_log ("          2004-2010 Ismail 'CeRiAl' Khatib\n\n");
 	write_log ("See the source for a full list of contributors.\n");
 	write_log ("This is free software; see the file COPYING for copying conditions.  There is NO\n");
 	write_log ("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");

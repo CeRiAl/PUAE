@@ -129,7 +129,8 @@ int fsdb_set_file_attrs (a_inode *aino)
 
 /* Return nonzero if we can represent the amigaos_mode of AINO within the
  * native FS.  Return zero if that is not possible.  */
-int fsdb_mode_representable_p (const a_inode *aino)
+
+int fsdb_mode_representable_p (const a_inode *aino, int amigaos_mode)
 {
     int mask = aino->amigaos_mode;
     int m1;
@@ -225,4 +226,25 @@ int dos_errno (void)
 	return ERROR_NOT_IMPLEMENTED;
     }
 }
+
+/* return supported combination */
+int fsdb_mode_supported (const a_inode *aino)
+{
+        int mask = aino->amigaos_mode;
+        if (0 && aino->dir)
+                return 0;
+        if (fsdb_mode_representable_p (aino, mask))
+                return mask;
+        mask &= ~(A_FIBF_SCRIPT | A_FIBF_READ | A_FIBF_EXECUTE);
+        if (fsdb_mode_representable_p (aino, mask))
+                return mask;
+        mask &= ~A_FIBF_WRITE;
+        if (fsdb_mode_representable_p (aino, mask))
+                return mask;
+        mask &= ~A_FIBF_DELETE;
+        if (fsdb_mode_representable_p (aino, mask))
+                return mask;
+        return 0;
+}
+
 #endif

@@ -4942,4 +4942,3 @@ void config_check_vsync (void)
 			config_changed = 0;
 	}
 }
-

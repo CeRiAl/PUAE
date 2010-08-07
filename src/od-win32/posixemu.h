@@ -6,7 +6,8 @@ void fname_atow (const char *src, char *dst, int size);
 void fname_wtoa (unsigned char *ptr);
 int w32fopendel(char *name, char *mode, int delflag);
 
-#ifndef HAVE_GETTIMEOFDAY
+//#ifndef HAVE_GETTIMEOFDAY
+#if 0
 void gettimeofday (struct timeval *tv, void *blah);
 #endif
 

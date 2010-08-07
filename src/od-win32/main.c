@@ -37,7 +37,7 @@ static RETSIGTYPE sigbrkhandler (int foo)
 
 void setup_brkhandler (void)
 {
-#if defined(__unix) && !defined(__NeXT__)
+#if defined(__unix) && !defined(__NeXT__) && !defined(_WIN32)
     struct sigaction sa;
     sa.sa_handler = sigbrkhandler;
     sa.sa_flags = 0;
@@ -161,12 +161,13 @@ int main (int argc, char **argv)
 
 //    hInst = hInstance;
 //    argc = __argc; argv = __argv;
-    start_path = xmalloc( MAX_DPATH );
+    //start_path = xmalloc( MAX_DPATH );
+    start_path = xmalloc( char, MAX_DPATH );
     GetModuleFileName( NULL, start_path, MAX_DPATH );
     if ((posn = strrchr( start_path, '\\')))
 	*posn = 0;
 
-    init_sdl ();
+//    init_sdl ();
 
     real_main (argc, argv);
 
@@ -236,7 +237,7 @@ void target_save_options (FILE *f, const struct uae_prefs *p)
 {
 }
 
-int target_parse_option (struct uae_prefs *p, const char *option, const char *value)
+int target_parse_option (struct uae_prefs *p, TCHAR *option, TCHAR *value)
 {
     return 0;
 }

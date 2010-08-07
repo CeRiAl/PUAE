@@ -21,7 +21,7 @@
 
 // %%% BRIAN KING WAS HERE %%%
 extern bool canbang;
-#include <sys/mman.h>
+// #include <sys/mman.h>
 extern void jit_abort(const TCHAR*,...);
 compop_func *compfunctbl[65536];
 compop_func *nfcompfunctbl[65536];
@@ -125,9 +125,9 @@ static uae_s32 nextused[VREGS];
 static uae_u8 *popallspace;
 
 #ifdef NATMEM_OFFSET
-# ifndef WIN32
+// # ifndef WIN32
 struct sigaction *saved_handler;
-# endif
+// # endif
 #endif
 
 uae_u32 m68k_pc_offset;

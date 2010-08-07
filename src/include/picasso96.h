@@ -1,5 +1,5 @@
 
-#ifdef WIN32
+#ifdef XWIN32
 
 #include "picasso96_win.h"
 

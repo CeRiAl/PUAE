@@ -1,5 +1,4 @@
 #include <SDL.h>
-#include "gp2x.h"
 #include "inputmode.h"
 
 extern char launchDir [256];
@@ -44,7 +43,8 @@ void inputmode_redraw(void) {
 	r.h=120;
 
 	if (inputMode[0] && inputMode[1]) {
-		if (gp2xMouseEmuOn) {
+//		if (gp2xMouseEmuOn) {
+		if (1) {
 			surface = inputMode[1];
 		} else {
 			surface = inputMode[0];

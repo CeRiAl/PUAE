@@ -30,7 +30,7 @@ DIST_SUBDIRS = \
 	gfx-amigaos gfx-beos gfx-x11 gfx-sdl gfx-curses gfx-svga gfx-cocoa \
 	sd-none sd-alsa sd-amigaos sd-beos sd-sdl sd-solaris sd-uss \
 	jd-none jd-amigainput jd-amigaos jd-beos jd-linuxold jd-sdl \
-	gui-none gui-beos gui-cocoa gui-gtk gui-muirexx \
+	gui-none gui-beos gui-cocoa gui-gtk gui-muirexx gui-sdl \
 	od-generic od-amiga od-beos od-linux od-macosx od-win32 \
 	td-none td-amigaos td-beos td-posix td-sdl td-win32 \
 	keymap caps archivers/dms archivers/zip

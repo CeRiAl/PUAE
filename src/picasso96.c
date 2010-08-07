@@ -4310,4 +4310,3 @@ uae_u8 *save_p96 (int *len, uae_u8 *dstptr)
 #endif //savestate
 #endif //picasso96
 
-

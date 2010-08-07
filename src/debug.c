@@ -65,7 +65,8 @@ extern int inputdevice_logging;
 
 static FILE *logfile;
 
-#ifndef _WIN32
+//#ifndef _WIN32
+#if 1
 #define console_out               printf
 #define console_flush()           fflush( stdout )
 #define console_get( input, len ) fgets( input, len, stdin )
@@ -3307,7 +3308,8 @@ static bool debug_line (TCHAR *input)
 				} else if (*inptr == 't') {
 					next_char (&inptr);
 					debugtest_set (&inptr);
-#ifdef _WIN32
+//#ifdef _WIN32
+#if 0
 				} else if (*inptr == 'g') {
 					extern void update_disassembly (uae_u32);
 					next_char (&inptr);
@@ -3476,7 +3478,8 @@ static bool debug_line (TCHAR *input)
 			{
 				uae_u32 maddr;
 				int lines;
-#ifdef _WIN32
+//#ifdef _WIN32
+#if 0
 				if (*inptr == 'g') {
 					extern void update_memdump (uae_u32);
 					next_char (&inptr);

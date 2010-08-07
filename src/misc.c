@@ -1368,6 +1368,7 @@ int D3D_goodenough (void)
 // debug_win32
 void update_debug_info(void)
 {
+
 }
 
 //win32gfx.cpp
@@ -1533,3 +1534,4 @@ void serialuartbreak (int v)
                 EscapeCommFunction (hCom, CLRBREAK);
 */
 }
+
