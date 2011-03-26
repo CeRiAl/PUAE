@@ -4,7 +4,7 @@
 #
 #
 #
-base=" --with-sdl --with-sdl-gl --with-sdl-gfx --with-sdl-sound --enable-drvsnd "
+base=" --without-x --with-cocoa-gfx --with-sdl --with-sdl-gl --with-sdl-gfx --with-sdl-sound --enable-drvsnd "
 cd32=" --enable-cd32 "
 a600=" --enable-gayle "
 scsi=" --enable-scsi-device --enable-ncr --enable-a2091 "
