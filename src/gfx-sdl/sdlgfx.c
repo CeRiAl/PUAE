@@ -1349,7 +1349,7 @@ void handle_events (void)
 			    keycode = rEvent.key.keysym.sym;
 */
 			    keycode = rEvent.key.keysym.sym;
-//				write_log ("Event: key: %d to: %d  %s\n", keycode, sdlk2dik (keycode), state ? "down" : "up");
+				//write_log ("Event: key: %d to: %d  %s\n", keycode, sdlk2dik (keycode), state ? "down" : "up");
 				my_kbd_handler (0, sdlk2dik (keycode), state);
 /*
 				if ((ievent = match_hotkey_sequence (keycode, state))) {

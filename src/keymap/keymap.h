@@ -82,6 +82,7 @@ enum {
     UAEKEY_RIGHTBRACKET,
     UAEKEY_SEMICOLON,
     UAEKEY_SINGLEQUOTE,
+    UAEKEY_NUMBERSIGN,
     UAEKEY_GRAVE,
     UAEKEY_BACKSLASH,
     UAEKEY_COMMA,
@@ -307,6 +308,7 @@ struct uaekey_hostmap
 #define DIK_MYCOMPUTER      0xEB    /* My Computer */
 #define DIK_MAIL            0xEC    /* Mail */
 #define DIK_MEDIASELECT     0xED    /* Media Select */
+#define DIK_NUMBERSIGN      0xEE
 
 /* Alternate names for keys, to facilitate transition from DOS. */
 #define DIK_BACKSPACE       DIK_BACK            /* backspace */
