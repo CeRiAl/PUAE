@@ -1249,9 +1249,16 @@ dnl
 
   if [[ "$GUI_DEP" = "gui-none" ]]; then
     if [[ "x$HAVE_GTK" = "xno" ]]; then
-      AC_MSG_WARN([UI wanted, but no UI useable target found])
-      NR_ERRORS=`expr $NR_ERRORS + 1`
-      WANT_UI=no
+      if [[ "x$HAVE_SDL" = "xno" ]]; then
+        AC_MSG_WARN([UI wanted, but no UI useable target found])
+        NR_ERRORS=`expr $NR_ERRORS + 1`
+        WANT_UI=no
+      else
+        GUI_DEP=gui-sdl
+        GUI_LIBS="-lSDL_image -lSDL_ttf $SDL_LIBS"
+        GUI_NAME="SDL"
+        GUI_CFLAGS="$CFLAGS"
+      fi
     else
       GUI_DEP=gui-gtk
       GUI_LIBS="$GTK_LIBS"
@@ -2036,6 +2043,7 @@ AC_CONFIG_FILES([Makefile
 		 src/gui-gtk/Makefile
 		 src/gui-muirexx/Makefile
 		 src/gui-qt/Makefile
+		 src/gui-sdl/Makefile
 		 src/keymap/Makefile
 		 src/test/Makefile
 ])
