@@ -373,7 +373,7 @@ case $host_os in
       HOST_OS=aros
       OSDEP=od-amiga
       ;;
-    mingw32*)
+    cygwin | mingw32*)
       HOST_OS=win32
       OSDEP=od-win32
 esac
@@ -633,6 +633,7 @@ else if [[ "$OSDEP" = "od-win32" ]]; then
   TARGET=win32
   TARGETDEP=t-win32.h
   WANT_BSDSOCK=no
+  MATHLIB=""
 fi
 fi
 fi

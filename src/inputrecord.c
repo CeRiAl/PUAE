@@ -519,7 +519,11 @@ void inprec_close (bool clear)
 
 static void setwriteprotect (const TCHAR *fname, bool readonly)
 {
+#ifdef __MINGW32__
+	struct stat st;
+#else
 	struct stat64 st;
+#endif
 	int mode, oldmode;
 	if (stat (fname, &st))
 		return;

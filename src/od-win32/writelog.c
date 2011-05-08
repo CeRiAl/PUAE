@@ -4,7 +4,7 @@
 
 #include <windows.h>
 
-#define SHOW_CONSOLE 0
+#define SHOW_CONSOLE 1
 
 static int consoleopen = 0;
 static HANDLE stdinput;
@@ -128,4 +128,20 @@ void f_out (void *f, const char *format, ...)
 	WriteConsole (stdoutput, buffer, strlen (buffer), &numwritten, 0);
 	va_end (parms);
     }
+}
+
+static char *console_buffer;
+static int console_buffer_size;
+
+char *setconsolemode (char *buffer, int maxlen)
+{
+        char *ret = NULL;
+        if (buffer) {
+                console_buffer = buffer;
+                console_buffer_size = maxlen;
+        } else {
+                ret = console_buffer;
+                console_buffer = NULL;
+        }
+        return ret;
 }

@@ -40,7 +40,7 @@
 
 #define SAVE_EXCEPTION
 #define RESTORE_EXCEPTION
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 struct m68k_exception {
 	int prb;
 	m68k_exception (int exc) : prb (exc) {}

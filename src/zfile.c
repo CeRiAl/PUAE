@@ -7,7 +7,9 @@
  *     2002-2007 Toni Wilen
  */
 
+#if defined(_WIN32) && !defined(__MINGW32__)
 #define ZLIB_WINAPI
+#endif
 #define RECURSIVE_ARCHIVES 1
 //#define ZFILE_DEBUG
 #define FSDB_DIR_SEPARATOR_S "\\"
@@ -1540,7 +1542,7 @@ static struct zfile *zfile_fopen_2 (const TCHAR *name, const TCHAR *mode, int ma
 		}
 		l->zfdmask = mask;
 	} else {
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) || defined(__MINGW32__)
 		struct stat st;
 #else
 		struct stat64 st;
@@ -1566,7 +1568,7 @@ static struct zfile *zfile_fopen_2 (const TCHAR *name, const TCHAR *mode, int ma
 	return l;
 }
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #include "win32.h"
 
 #define AF "%AMIGAFOREVERDATA%"
@@ -1652,7 +1654,7 @@ static struct zfile *zfile_fopen_x (const TCHAR *name, const TCHAR *mode, int ma
 	return l;
 }
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 static int isinternetfile (const TCHAR *name)
 {
 	if (!_tcsnicmp (name, "http://", 7) || !_tcsnicmp (name, "https://", 8))
@@ -1758,7 +1760,7 @@ static struct zfile *zfile_fopenx2 (const TCHAR *name, const TCHAR *mode, int ma
 	struct zfile *f;
 	TCHAR tmp[MAX_DPATH];
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 	if (isinternetfile (name))
 		return zfile_fopen_internet (name, mode, mask);
 #endif

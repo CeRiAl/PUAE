@@ -5754,13 +5754,14 @@ static void hsync_handler_post (bool isvsync)
 		}
 	}
 #endif
-
+#ifdef BSDSOCKET
 	{
 		extern void bsdsock_fake_int_handler (void);
 		extern int volatile bsd_int_requested;
 		if (bsd_int_requested)
 			bsdsock_fake_int_handler ();
 	}
+#endif
 
 	plfstrt_sprite = plfstrt;
 	/* See if there's a chance of a copper wait ending this line.  */

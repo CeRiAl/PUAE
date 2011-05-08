@@ -39,6 +39,10 @@ static int logging_started;
 #define LOG_BOOT "puae_bootlog.txt"
 #define LOG_NORMAL "puae_log.txt"
 
+#ifdef __MINGW32__
+#define lstat stat
+#endif
+
 static int tablet;
 static int axmax, aymax, azmax;
 static int xmax, ymax, zmax;
@@ -334,7 +338,7 @@ static int driveclick_fdrawcmd_init(int drive)
 // win32
 uae_u32 emulib_target_getcpurate (uae_u32 v, uae_u32 *low)
 {
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
         *low = 0;
         if (v == 1) {
                 LARGE_INTEGER pf;
@@ -552,7 +556,77 @@ char *ua_copy (char *dst, int maxlen, const char *src)
         return dst;
 }
 
+TCHAR start_path_data[MAX_DPATH];
+
+void fetch_path (TCHAR *name, TCHAR *out, int size)
+{
+        int size2 = size;
+
+	_tcscpy (start_path_data, "./");
+        _tcscpy (out, start_path_data);
+        if (!name)
+                return;
+/*        if (!_tcscmp (name, "FloppyPath"))
+                _tcscat (out, "../shared/adf/");
+        if (!_tcscmp (name, "CDPath"))
+                _tcscat (out, "../shared/cd/");
+        if (!_tcscmp (name, "hdfPath"))
+                _tcscat (out, "../shared/hdf/");
+        if (!_tcscmp (name, "KickstartPath"))
+                _tcscat (out, "../shared/rom/");
+        if (!_tcscmp (name, "ConfigurationPath"))
+                _tcscat (out, "Configurations/");
+*/
+        if (!_tcscmp (name, "FloppyPath"))
+                _tcscat (out, "./");
+        if (!_tcscmp (name, "CDPath"))
+                _tcscat (out, "./");
+        if (!_tcscmp (name, "hdfPath"))
+                _tcscat (out, "./");
+        if (!_tcscmp (name, "KickstartPath"))
+                _tcscat (out, "./");
+        if (!_tcscmp (name, "ConfigurationPath"))
+                _tcscat (out, "./");
+
+}
+
 // win32gui
+
+void fetch_saveimagepath (TCHAR *out, int size, int dir)
+{
+/*        assert (size > MAX_DPATH);
+        fetch_path ("SaveimagePath", out, size);
+        if (dir) {
+                out[_tcslen (out) - 1] = 0;
+                createdir (out);*/
+                fetch_path ("SaveimagePath", out, size);
+//        }
+}
+void fetch_configurationpath (TCHAR *out, int size)
+{
+        fetch_path ("ConfigurationPath", out, size);
+}
+void fetch_screenshotpath (TCHAR *out, int size)
+{
+        fetch_path ("ScreenshotPath", out, size);
+}
+void fetch_ripperpath (TCHAR *out, int size)
+{
+        fetch_path ("RipperPath", out, size);
+}
+void fetch_statefilepath (TCHAR *out, int size)
+{
+        fetch_path ("StatefilePath", out, size);
+}
+void fetch_inputfilepath (TCHAR *out, int size)
+{
+        fetch_path ("InputPath", out, size);
+}
+void fetch_datapath (TCHAR *out, int size)
+{
+        fetch_path (NULL, out, size);
+}
+
 static int qs_override;
 
 int target_cfgfile_load (struct uae_prefs *p, char *filename, int type, int isdefault)
@@ -820,74 +894,6 @@ void target_fixup_options (struct uae_prefs *p)
 #endif
 }
 
-TCHAR start_path_data[MAX_DPATH];
-
-void fetch_path (TCHAR *name, TCHAR *out, int size)
-{
-        int size2 = size;
-
-	_tcscpy (start_path_data, "./");
-        _tcscpy (out, start_path_data);
-        if (!name)
-                return;
-/*        if (!_tcscmp (name, "FloppyPath"))
-                _tcscat (out, "../shared/adf/");
-        if (!_tcscmp (name, "CDPath"))
-                _tcscat (out, "../shared/cd/");
-        if (!_tcscmp (name, "hdfPath"))
-                _tcscat (out, "../shared/hdf/");
-        if (!_tcscmp (name, "KickstartPath"))
-                _tcscat (out, "../shared/rom/");
-        if (!_tcscmp (name, "ConfigurationPath"))
-                _tcscat (out, "Configurations/");
-*/
-        if (!_tcscmp (name, "FloppyPath"))
-                _tcscat (out, "./");
-        if (!_tcscmp (name, "CDPath"))
-                _tcscat (out, "./");
-        if (!_tcscmp (name, "hdfPath"))
-                _tcscat (out, "./");
-        if (!_tcscmp (name, "KickstartPath"))
-                _tcscat (out, "./");
-        if (!_tcscmp (name, "ConfigurationPath"))
-                _tcscat (out, "./");
-
-}
-
-void fetch_saveimagepath (TCHAR *out, int size, int dir)
-{
-/*        assert (size > MAX_DPATH);
-        fetch_path ("SaveimagePath", out, size);
-        if (dir) {
-                out[_tcslen (out) - 1] = 0;
-                createdir (out);*/
-                fetch_path ("SaveimagePath", out, size);
-//        }
-}
-void fetch_configurationpath (TCHAR *out, int size)
-{
-        fetch_path ("ConfigurationPath", out, size);
-}
-void fetch_screenshotpath (TCHAR *out, int size)
-{
-        fetch_path ("ScreenshotPath", out, size);
-}
-void fetch_ripperpath (TCHAR *out, int size)
-{
-        fetch_path ("RipperPath", out, size);
-}
-void fetch_statefilepath (TCHAR *out, int size)
-{
-        fetch_path ("StatefilePath", out, size);
-}
-void fetch_inputfilepath (TCHAR *out, int size)
-{
-        fetch_path ("InputPath", out, size);
-}
-void fetch_datapath (TCHAR *out, int size)
-{
-        fetch_path (NULL, out, size);
-}
 // convert path to absolute or relative
 void fullpath (TCHAR *path, int size)
 {

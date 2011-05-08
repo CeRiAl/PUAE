@@ -371,6 +371,7 @@ static uae_u32 vhd_checksum (uae_u8 *p, int offset)
 	return ~sum;
 }
 
+#ifndef __MINGW32__
 int hdf_open (struct hardfiledata *hfd, const TCHAR *pname)
 {
 	uae_u8 tmp[512], tmp2[512];
@@ -453,6 +454,7 @@ int hdf_dup (struct hardfiledata *dhfd, const struct hardfiledata *shfd)
 {
 	return hdf_dup_target (dhfd, shfd);
 }
+#endif
 
 extern int get_guid_target (uae_u8 *out);
 
@@ -891,6 +893,7 @@ int hdf_read_rdb (struct hardfiledata *hfd, void *buffer, uae_u64 offset, int le
 	return v;
 }
 
+#ifndef __MINGW32__
 int hdf_read (struct hardfiledata *hfd, void *buffer, uae_u64 offset, int len)
 {
 	int v;
@@ -906,6 +909,7 @@ int hdf_read (struct hardfiledata *hfd, void *buffer, uae_u64 offset, int len)
 		hdf_byteswap (buffer, len);
 	return v;
 }
+#endif
 
 static int hdf_write2 (struct hardfiledata *hfd, void *buffer, uae_u64 offset, int len)
 {
@@ -917,6 +921,7 @@ static int hdf_write2 (struct hardfiledata *hfd, void *buffer, uae_u64 offset, i
 		return hdf_write_target (hfd, buffer, offset, len);
 }
 
+#ifndef __MINGW32__
 int hdf_write (struct hardfiledata *hfd, void *buffer, uae_u64 offset, int len)
 {
 	int v;
@@ -935,6 +940,7 @@ int hdf_write (struct hardfiledata *hfd, void *buffer, uae_u64 offset, int len)
 		hdf_byteswap (buffer, len);
 	return v;
 }
+#endif
 
 static uae_u64 cmd_readx (struct hardfiledata *hfd, uae_u8 *dataptr, uae_u64 offset, uae_u64 len)
 {

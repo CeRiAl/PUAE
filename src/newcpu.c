@@ -3234,12 +3234,14 @@ STATIC_INLINE int do_specialties (int cycles)
 			}
 		}
 #endif
+#ifdef BSDSOCKET
 		{
 			extern void bsdsock_fake_int_handler (void);
 			extern int volatile bsd_int_requested;
 			if (bsd_int_requested)
 				bsdsock_fake_int_handler ();
 		}
+#endif
 
 		if (cpu_tracer > 0) {
 			cputrace.stopped = regs.stopped;

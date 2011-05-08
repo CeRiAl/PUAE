@@ -37,7 +37,7 @@ static RETSIGTYPE sigbrkhandler (int foo)
 
 void setup_brkhandler (void)
 {
-#if defined(__unix) && !defined(__NeXT__)
+#if defined(__unix) && !defined(__NeXT__) && !defined(__MINGW32__)
     struct sigaction sa;
     sa.sa_handler = sigbrkhandler;
     sa.sa_flags = 0;
@@ -161,12 +161,14 @@ int main (int argc, char **argv)
 
 //    hInst = hInstance;
 //    argc = __argc; argv = __argv;
-    start_path = xmalloc( MAX_DPATH );
+    start_path = xmalloc( char, MAX_DPATH );
     GetModuleFileName( NULL, start_path, MAX_DPATH );
     if ((posn = strrchr( start_path, '\\')))
 	*posn = 0;
 
+#ifndef __MINGW32__
     init_sdl ();
+#endif
 
     real_main (argc, argv);
 

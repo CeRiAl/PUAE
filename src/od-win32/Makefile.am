@@ -5,6 +5,6 @@ AM_CFLAGS    = @UAE_CFLAGS@
 noinst_LIBRARIES = libosdep.a
 
 libosdep_a_SOURCES = main.c memory.c posixemu.c writelog.c fsdb_win32.c \
-		     hardfile_win32.c bsdsock.c
+		     hardfile_win32.c bsdsock.c parser.c
 
 noinst_HEADERS = memory.h hrtimer.h posixemu.h

@@ -444,7 +444,7 @@ void fixup_prefs (struct uae_prefs *p)
 #endif
 #if !defined (SCSIEMU)
 	p->scsi = 0;
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 	p->win32_aspi = 0;
 #endif
 #endif
@@ -811,7 +811,7 @@ void leave_program (void)
 	do_leave_program ();
 }
 
-#if (defined (_WIN32) || defined (_WIN64)) && !defined (NO_WIN32_EXCEPTION_HANDLER)
+#if (defined (_WIN32) || defined (_WIN64)) && !defined (NO_WIN32_EXCEPTION_HANDLER) && !defined(__MINGW32__)
 #ifndef JIT
 extern int DummyException (LPEXCEPTION_POINTERS blah, int n_except)
 {
@@ -822,7 +822,7 @@ extern int DummyException (LPEXCEPTION_POINTERS blah, int n_except)
 
 static int real_main2 (int argc, TCHAR **argv)
 {
-#if (defined (_WIN32) || defined (_WIN64)) && !defined (NO_WIN32_EXCEPTION_HANDLER)
+#if (defined (_WIN32) || defined (_WIN64)) && !defined (NO_WIN32_EXCEPTION_HANDLER) && !defined(__MINGW32__)
 	extern int EvalException (LPEXCEPTION_POINTERS blah, int n_except);
 	__try
 #endif
@@ -975,7 +975,7 @@ static int real_main2 (int argc, TCHAR **argv)
 	}
 
     }
-#if (defined (_WIN32) || defined (_WIN64)) && !defined (NO_WIN32_EXCEPTION_HANDLER)
+#if (defined (_WIN32) || defined (_WIN64)) && !defined (NO_WIN32_EXCEPTION_HANDLER) && !defined(__MINGW32__)
 #ifdef JIT
     __except( EvalException( GetExceptionInformation(), GetExceptionCode() ) )
 #else
