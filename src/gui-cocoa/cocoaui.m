@@ -901,8 +901,8 @@ static BOOL wasFullscreen = NO; // used by ensureNotFullscreen() and restoreFull
 
 #ifdef JIT
 		if (tag == 10) {
-			if (changed_prefs.fpu_strict) [menuItem setState:NSOnState];
-			else [menuItem setState:NSOffState];
+			/* if (changed_prefs.fpu_strict) [menuItem setState:NSOnState];
+			else*/ [menuItem setState:NSOffState];
 		}
 #endif
 
