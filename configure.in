@@ -1218,12 +1218,13 @@ if [[ "x$WANT_UI" = "xno" ]]; then
   GUI_DEP=gui-none
   GUI_LIBS=
   GUI_NAME=none
-fi
-
+else
+  dnl
   dnl Hack for building Cocoa gui on OS X
-  dnl We really should reall check for the presence of objc and Cocoa first
-  if [[ "$HOST_OS" = "darwin" ]]; then
-    if [[ "x$WANT_COCOA_UI" != "xno" -o "x$HAVE_GTK" = "xno" ]]; then
+  dnl We really should really check for the presence of objc and Cocoa first
+  dnl
+  if [[ "x$HOST_OS" = "xdarwin" ]]; then
+    if [[ "x$WANT_COCOA_UI" != "xno" ]]; then
       GUI_DEP=gui-cocoa
       GUI_CFLAGS="$CFLAGS -DNO_MAIN_IN_MAIN_C"
       GUI_LIBS="-framework Cocoa"
@@ -1231,11 +1232,11 @@ fi
     fi
   fi
 
-dnl 
-dnl QT GUI
-dnl
- if [[ "x$WANT_QT" = "xyes" ]]; then
-  if [[ "x$HAVE_QT" = "xyes" ]]; then
+  dnl 
+  dnl QT GUI
+  dnl
+  if [[ "x$WANT_QT" = "xyes" ]]; then
+    if [[ "x$HAVE_QT" = "xyes" ]]; then
       GUI_DEP=gui-qt
       GUI_LIBS="$QT_LIBS"
       GUI_NAME="Qt"
@@ -1245,32 +1246,53 @@ dnl
       if [[ "x$WANT_THREADS" = "xno" ]]; then
         AC_MSG_ERROR([Thread support disabled, but Qt UI requires threads])
       fi
+    fi
   fi
- fi
 
-  if [[ "$GUI_DEP" = "gui-none" ]]; then
-    if [[ "x$HAVE_GTK" = "xno" ]]; then
-      if [[ "x$HAVE_SDL" = "xno" ]]; then
-        AC_MSG_WARN([UI wanted, but no UI useable target found])
-        NR_ERRORS=`expr $NR_ERRORS + 1`
-        WANT_UI=no
+
+
+
+  dnl
+  dnl GTK GUI
+  dnl
+  if [[ "x$HAVE_GTK" = "xyes" ]]; then
+    GUI_DEP=gui-gtk
+    GUI_LIBS="$GTK_LIBS"
+    GUI_NAME="GTK+"
+    GUI_CFLAGS="$CFLAGS"
+    NEED_THREAD_SUPPORT=yes
+    if [[ "x$WANT_THREADS" = "xno" ]]; then
+      AC_MSG_ERROR([Thread support disabled, but GTK+ UI requires threads])
+    fi
+  fi
+
+  dnl 
+  dnl SDL GUI
+  dnl We really should really check for the presence of SDL_image and SDL_ttf first
+  dnl
+  if [[ "x$WANT_SDL_UI" = "xyes" -o "x$GUI_DEP" = "xgui-none" ]]; then
+    if [[ "x$HAVE_SDL" = "xyes" ]]; then
+      WANT_SDL_UI=yes
+      GUI_DEP=gui-sdl
+      GUI_NAME="SDL"
+      if [[ "$HOST_OS" = "darwin" ]]; then
+        dnl Assume this is MacOS X and try to use SDL_ttf and SDL_image frameworks
+        GUI_LIBS="$SDL_LIBS -framework SDL_image -framework SDL_ttf"
+        GUI_CFLAGS="$CFLAGS -I/Library/Frameworks/SDL_image.framework/Headers -I/Library/Frameworks/SDL_ttf.framework/Headers"
+	    WANT_COCOA_UI=no
       else
-        GUI_DEP=gui-sdl
-        GUI_LIBS="-lSDL_image -lSDL_ttf $SDL_LIBS"
-        GUI_NAME="SDL"
+        GUI_LIBS="$SDL_LIBS -lSDL_image -lSDL_ttf"
         GUI_CFLAGS="$CFLAGS"
-      fi
-    else
-      GUI_DEP=gui-gtk
-      GUI_LIBS="$GTK_LIBS"
-      GUI_NAME="GTK+"
-      GUI_CFLAGS="$CFLAGS"
-      NEED_THREAD_SUPPORT=yes
-      if [[ "x$WANT_THREADS" = "xno" ]]; then
-        AC_MSG_ERROR([Thread support disabled, but GTK+ UI requires threads])
       fi
     fi
   fi
+
+  if [[ "$GUI_DEP" = "gui-none" ]]; then
+    AC_MSG_WARN([UI wanted, but no UI useable target found])
+    NR_ERRORS=`expr $NR_ERRORS + 1`
+    WANT_UI=no
+  fi
+fi
 
 AC_MSG_RESULT("$GUI_NAME")
 
@@ -1647,6 +1669,14 @@ if [[ "x$WANT_SDL" = "xyes" ]]; then
    JOY_DEP=jd-sdl
    UAE_LIBS="$SDL_LIBS $UAE_LIBS"
    UAE_CPPFLAGS="$UAE_CPPFLAGS $SDL_CFLAGS"
+fi
+
+
+dnl
+dnl  Are we using a Cocoa GUI?
+dnl
+if [[ "x$WANT_COCOA_UI" == "xyes" ]]; then
+  UAE_DEFINES="$UAE_DEFINES -DUSE_COCOA_GUI"
 fi
 
 

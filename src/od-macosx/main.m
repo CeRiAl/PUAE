@@ -44,8 +44,10 @@ extern OSErr CPSSetFrontProcess (CPSProcessSerNum *psn);
 
 #endif /* SDL_USE_CPS */
 
+#ifdef USE_COCOA_GUI
 // Function found in gui-cocoa/cocoaui.m
 extern void cocoa_gui_early_setup (void);
+#endif
 
 static int     gArgc;
 static char  **gArgv;
@@ -229,8 +231,10 @@ static void CustomApplicationMain (int argc, char **argv)
     setApplicationMenu ();
     setupWindowMenu ();
 
+#ifdef USE_COCOA_GUI
 	/* Set up the UAE menus */
 	cocoa_gui_early_setup();
+#endif /* USE_COCOA_GUI */
 
     /* Create SDLMain and make it the app delegate */
     puae_main = [[PUAE_Main alloc] init];
@@ -298,7 +302,8 @@ NSString *finderLaunchFilename = nil;
 			myArgv[0] = gArgv[0];
 			myArgv[1] = &arg1[0];
 			myArgv[2] = &arg2[0];
-				
+
+#ifdef USE_COCOA_GUI
 			/* If we were launched from the Finder, but without a config file
 			 * being selected, we need to ask for one now.
 			 */
@@ -325,6 +330,7 @@ NSString *finderLaunchFilename = nil;
 					exit(EXIT_SUCCESS);
 				}
 			}
+#endif
 			
 			/* Check the extension of the file that was double-clicked.
 			 * If it's ".uaerc" then we keep the switch argument set to "-f",

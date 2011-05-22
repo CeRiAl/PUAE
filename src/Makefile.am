@@ -95,8 +95,8 @@ if SDL_UI
 		cp -R $(srcdir)/gui-sdl/fonts $(bundle_contents)/MacOS
 		cp -R $(srcdir)/gui-sdl/images $(bundle_contents)/MacOS
 endif
-		$(INSTALL_DATA) od-macosx/puae.icns $(bundle_contents)/Resources/
-		$(INSTALL_DATA) od-macosx/Credits.rtf $(bundle_contents)/Resources/
+		$(INSTALL_DATA) $(srcdir)/od-macosx/puae.icns $(bundle_contents)/Resources/
+		$(INSTALL_DATA) $(srcdir)/od-macosx/Credits.rtf $(bundle_contents)/Resources/
 endif
 
 noinst_LIBRARIES = \

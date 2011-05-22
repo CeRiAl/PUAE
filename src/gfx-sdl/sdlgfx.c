@@ -78,8 +78,8 @@ unsigned int shading_enabled = 0;
 #define DEBUG_LOG(...) do ; while(0)
 #endif
 
-static SDL_Surface *display;
-static SDL_Surface *screen;
+SDL_Surface *display;
+SDL_Surface *screen;
 
 /* Standard P96 screen modes */
 #define MAX_SCREEN_MODES 12
@@ -312,7 +312,7 @@ static int init_colors (void)
     if (currprefs.use_gl) {
 		DEBUG_LOG ("SDLGFX: bitdepth = %d\n", bitdepth);
 		if (bitdepth <= 8) {
-		    write_log ("SDLGFX: bitdepth %d to small\n", bitdepth);
+		    write_log ("SDLGFX: bitdepth %d too small\n", bitdepth);
 		    abort();
 		}
     }

@@ -184,7 +184,7 @@ int dirz (int parametre) {
 #ifdef TOUCHUI
 		SDL_TUI_UpdateAll();
 #endif
-		SDL_Flip(display);
+		redraw_frame();
 	} //while done
 
 	free(filez);

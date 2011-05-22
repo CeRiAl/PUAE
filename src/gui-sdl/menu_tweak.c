@@ -1,3 +1,8 @@
+#include "sysconfig.h"
+#include "sysdeps.h"
+
+#include "options.h"
+
 #include "SDL.h"
 #include <stdlib.h>
 
@@ -188,7 +193,7 @@ int tweakz (int parametre) {
 #ifdef TOUCHUI
 		SDL_TUI_UpdateAll();
 #endif
-		SDL_Flip(display);
+		redraw_frame();
 	} //while done
 
     	pMenu_Surface = SDL_LoadBMP("images/menu.bmp");

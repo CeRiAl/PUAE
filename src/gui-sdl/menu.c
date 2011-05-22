@@ -8,7 +8,10 @@
 #include "menu.h"
 #include "sysconfig.h"
 #include "sysdeps.h"
+
+#include "options.h"
 #include "uae.h"
+
 #include "gui.h"
 #include "zfile.h"
 
@@ -25,7 +28,9 @@
 
 #define VIDEO_FLAGS SDL_HWSURFACE
 SDL_Surface* tmpSDLScreen = NULL;
-SDL_Surface* display = NULL;
+extern SDL_Surface* display;
+
+bool sdlGuiInitialized = false;
 
 int menuSelection = 0;
 char yol[256];
@@ -63,14 +68,14 @@ void blit_image (SDL_Surface* img, int x, int y) {
    	SDL_BlitSurface(img, 0, tmpSDLScreen, &dest);
 }
 
-void secilimi (int ix, int iy, int mx, int my, SDL_Surface* img, int hangi) {
-        int secili = 0;
+void drawMenuIcon (int ix, int iy, int mx, int my, SDL_Surface* img, int hangi) {
+        int selection = 0;
         if (mx >= ix && mx <= ix + iconsizex) {
                 if (my >= iy && my <= iy + iconsizey) {
-                    secili = 1;
+                    selection = 1;
                 }
         }
-        if (secili == 1) {
+        if (selection == 1) {
             SDL_SetAlpha(img, SDL_SRCALPHA, 100);
             menuSelection = hangi;
         } else {
@@ -79,9 +84,6 @@ void secilimi (int ix, int iy, int mx, int my, SDL_Surface* img, int hangi) {
 }
 
 int gui_init (void) {
-	if (display == NULL) {
-		display = SDL_GetVideoSurface();
-	}
 	if (display) {
 		SDL_JoystickEventState(SDL_ENABLE);
 		SDL_JoystickOpen(0);
@@ -111,6 +113,7 @@ int gui_init (void) {
 #ifdef TOUCHUI
 		SDL_TUI_Init("sdl_touchui.xml", "keyboard-off");
 #endif
+		sdlGuiInitialized = true;
 		return 1;
 	}
 	return 0;
@@ -151,7 +154,7 @@ void gui_display (int shortcut){
 	int iconpos_x = 0;
 	int iconpos_y = 0;
 
-	if (display == NULL) {
+	if (!sdlGuiInitialized) {
 		gui_init();
 	}
 
@@ -267,48 +270,47 @@ void gui_display (int shortcut){
         	iconpos_x = 10;
 	        iconpos_y = 23;
 
-        	secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y,icon_floppy, menu_sel_floppy);
+        	drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y,icon_floppy, menu_sel_floppy);
 	        blit_image (icon_floppy, iconpos_x, iconpos_y);
 
 	        iconpos_x += iconsizex + bosluk;
-        	secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_preferences, menu_sel_prefs);
+        	drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_preferences, menu_sel_prefs);
 	        blit_image (icon_preferences, iconpos_x, iconpos_y);
 
 	        iconpos_x += iconsizex + bosluk;
-        	secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_tweaks, menu_sel_tweaks);
+        	drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_tweaks, menu_sel_tweaks);
 	        blit_image (icon_tweaks, iconpos_x, iconpos_y);
 
         	iconpos_x += iconsizex + bosluk;
-	        secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_keymaps, menu_sel_keymaps);
+	        drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_keymaps, menu_sel_keymaps);
         	blit_image (icon_keymaps, iconpos_x, iconpos_y);
 
 	        iconpos_x += iconsizex + bosluk;
-	        secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_expansion, menu_sel_expansion);
+	        drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_expansion, menu_sel_expansion);
         	blit_image (icon_expansion, iconpos_x, iconpos_y);
 
         	iconpos_x = 10;
 	        iconpos_y = 93;
 
-        	secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y,icon_storage, menu_sel_storage);
+        	drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y,icon_storage, menu_sel_storage);
 	        blit_image (icon_storage, iconpos_x, iconpos_y);
 
 	        iconpos_x += iconsizex + bosluk;
-	        secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_reset, menu_sel_reset);
+	        drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_reset, menu_sel_reset);
         	blit_image (icon_reset, iconpos_x, iconpos_y);
 
 	        iconpos_x += iconsizex + bosluk;
-        	secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_run, menu_sel_run);
+        	drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_run, menu_sel_run);
 	        blit_image (icon_run, iconpos_x, iconpos_y);
 
         	iconpos_x += iconsizex + bosluk;
-	        secilimi (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_exit, menu_sel_exit);
+	        drawMenuIcon (iconpos_x,iconpos_y,mouse_x,mouse_y, icon_exit, menu_sel_exit);
         	blit_image (icon_exit, iconpos_x, iconpos_y);
 	// texts
 
-			//char tmpMsg[50];
-			//sprintf(tmpMsg, "P-UAE %d.%d.%d", UAEMAJOR, UAEMINOR, UAESUBREV);
-			//write_text (26, 3, tmpMsg);
-        	write_text (26, 3, "P-UAE 2.3.0");
+			char tmpMsg[50];
+			sprintf(tmpMsg, "P-UAE %d.%d.%d", UAEMAJOR, UAEMINOR, UAESUBREV);
+			write_text (26, 3, tmpMsg);
 
 	// mouse pointer ------------------------------
 		if (kleft == 1) {
@@ -343,7 +345,7 @@ void gui_display (int shortcut){
 #ifdef TOUCHUI
 		SDL_TUI_UpdateAll();
 #endif
-		SDL_Flip(display);
+		redraw_frame();
 	} //while done
 
 }

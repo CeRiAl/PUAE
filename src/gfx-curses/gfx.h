@@ -8,3 +8,5 @@
 
 #define GFX_NAME "curses"
 #define USE_CURSES_GFX
+#define PICASSO96_SUPPORTED
+#define PICASSO96

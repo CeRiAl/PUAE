@@ -201,7 +201,7 @@ int prefz (int parametre) {
 #ifdef TOUCHUI
 		SDL_TUI_UpdateAll();
 #endif
-		SDL_Flip(display);
+		redraw_frame();
 	} //while done
 /*
 	if (defaults[0] == 4) { }

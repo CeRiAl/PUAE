@@ -31,8 +31,11 @@
 #include "inputdevice.h"
 #include "keyboard.h"
 #include "keybuf.h"
+#include "../keymap/keymap.h"
+
 #include "disk.h"
 #include "debug.h"
+#include "picasso96.h"
 
 #ifdef HAVE_NCURSES_H
 #include <ncurses.h>
@@ -323,10 +326,10 @@ static int getgraycol (int x, int y)
     xl = x_map[x+1] - (xs = x_map[x]);
     yl = y_map[y+1] - (ys = y_map[y]);
 
-    bufpt = ((uae_u8 *)gfxvidinfo.bufmem) + ys*currprefs.gfx_width + xs;
+    bufpt = ((uae_u8 *)gfxvidinfo.bufmem) + ys*currprefs.gfx_size.width + xs;
 
     cm = c = 0;
-    for(y = 0; y < yl; y++, bufpt += currprefs.gfx_width)
+    for(y = 0; y < yl; y++, bufpt += currprefs.gfx_size.width)
 	for(x = 0; x < xl; x++) {
 	    c += bufpt[x];
 	    ++cm;
@@ -350,10 +353,10 @@ static int getcol (int x, int y)
     xl = x_map[x+1] - (xs = x_map[x]);
     yl = y_map[y+1] - (ys = y_map[y]);
 
-    bufpt = ((uae_u16 *)gfxvidinfo.bufmem) + ys*currprefs.gfx_width + xs;
+    bufpt = ((uae_u16 *)gfxvidinfo.bufmem) + ys*currprefs.gfx_size.width + xs;
 
     cm = c = 0;
-    for(y = 0; y < yl; y++, bufpt += currprefs.gfx_width)
+    for(y = 0; y < yl; y++, bufpt += currprefs.gfx_size.width)
 	for(x = 0; x < xl; x++) {
 	    int v = bufpt[x];
 	    int cnt;
@@ -464,17 +467,17 @@ int graphics_init (void)
 
     /* we have a 320x256x8 pseudo screen */
 
-    currprefs.gfx_width = 320;
-    currprefs.gfx_height = 256;
-    currprefs.gfx_lores = 1;
+    currprefs.gfx_size.width = 320;
+    currprefs.gfx_size.height = 256;
+    currprefs.gfx_lores_mode = 1;
     currprefs.gfx_vresolution = 0;
 
-    gfxvidinfo.width = currprefs.gfx_width;
-    gfxvidinfo.height = currprefs.gfx_height;
+    gfxvidinfo.width = currprefs.gfx_size.width;
+    gfxvidinfo.height = currprefs.gfx_size.height;
     gfxvidinfo.maxblocklines = MAXBLOCKLINES_MAX;
     gfxvidinfo.pixbytes = currprefs.color_mode < 2 ? 1 : 2;
-    gfxvidinfo.rowbytes = gfxvidinfo.pixbytes * currprefs.gfx_width;
-    gfxvidinfo.bufmem = (uae_u8 *)calloc(gfxvidinfo.rowbytes, currprefs.gfx_height+1);
+    gfxvidinfo.rowbytes = gfxvidinfo.pixbytes * currprefs.gfx_size.width;
+    gfxvidinfo.bufmem = (uae_u8 *)calloc(gfxvidinfo.rowbytes, currprefs.gfx_size.height+1);
     gfxvidinfo.linemem = 0;
     gfxvidinfo.emergmem = 0;
     switch (gfxvidinfo.pixbytes) {
@@ -493,9 +496,9 @@ int graphics_init (void)
     }
 
     for (i = 0; i < sizeof x_map / sizeof *x_map; i++)
-	x_map[i] = (i * currprefs.gfx_width) / COLS;
+	x_map[i] = (i * currprefs.gfx_size.width) / COLS;
     for (i = 0; i < sizeof y_map / sizeof *y_map; i++)
-	y_map[i] = (i * currprefs.gfx_height) / LINES;
+	y_map[i] = (i * currprefs.gfx_size.height) / LINES;
     for (i = 0; i < sizeof y_map / sizeof *y_map - 1; i++) {
 	int l1 = y_map[i];
 	int l2 = y_map[i+1];
@@ -920,4 +923,54 @@ void gfx_save_options (FILE *f, const struct uae_prefs *p)
 int gfx_parse_option (struct uae_prefs *p, const char *option, const char *value)
 {
     return (cfgfile_yesno (option, value, "reverse_video", &p->curses_reverse_video));
+}
+
+
+int DX_Fill (int dstx, int dsty, int width, int height, uae_u32 color, RGBFTYPE rgbtype)
+{
+    /* not implemented yet */
+    return 0;
+}
+
+void gfx_set_picasso_modeinfo (uae_u32 w, uae_u32 h, uae_u32 depth, RGBFTYPE rgbfmt)
+{
+}
+
+void DX_Invalidate (int first, int last)
+{
+}
+
+int DX_FillResolutions (uae_u16 *ppixel_format)
+{
+	/* not implemented yet */
+	return 0;
+}
+
+uae_u8 *gfx_lock_picasso (void)
+{
+	/* not implemented yet */
+	return 0;
+}
+
+void gfx_unlock_picasso (void)
+{
+}
+
+void gfx_set_picasso_state (int on)
+{
+}
+
+int picasso_palette (void)
+{
+	/* not implemented yet */
+	return 0;
+}
+
+int WIN32GFX_IsPicassoScreen (void)
+{
+	return false;
+}
+
+void gfx_set_picasso_colors (RGBFTYPE rgbfmt)
+{
 }
