@@ -1,3 +1,9 @@
+#include "sysconfig.h"
+#include "sysdeps.h"
+
+#include "options.h"
+#include "uae.h"
+
 #include <SDL.h>
 #include "inputmode.h"
 
