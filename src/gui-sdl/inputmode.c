@@ -1,7 +1,7 @@
 #include <SDL.h>
 #include "inputmode.h"
 
-extern char launchDir [256];
+extern char launchDir[MAX_PATH];
 extern SDL_Surface *prSDLScreen;
 
 static SDL_Surface *ksur;
@@ -9,11 +9,10 @@ static SDL_Surface *inputMode[3];
 
 int show_inputmode = 0;
 
-int inputmode_init(void) {
+int inputmode_init (void) {
 	int i;
-	char tmpchar[256];
+	char tmpchar[MAX_PATH];
 	SDL_Surface* tmp;
-	
 	
 	sprintf(tmpchar, "%s/images/joystick.bmp", launchDir);
 	tmp = SDL_LoadBMP(tmpchar);
@@ -33,14 +32,14 @@ int inputmode_init(void) {
 }
 
 
-void inputmode_redraw(void) {
+void inputmode_redraw (void) {
 	SDL_Rect r;
 	SDL_Surface* surface;
 
-	r.x=80;
-	r.y=60;
-	r.w=160;
-	r.h=120;
+	r.x = 80;
+	r.y = 60;
+	r.w = 160;
+	r.h = 120;
 
 	if (inputMode[0] && inputMode[1]) {
 //		if (gp2xMouseEmuOn) {
@@ -50,6 +49,6 @@ void inputmode_redraw(void) {
 			surface = inputMode[0];
 		}
 
-		SDL_BlitSurface(surface,NULL,prSDLScreen,&r);
+		SDL_BlitSurface(surface, NULL, prSDLScreen, &r);
 	}
 }

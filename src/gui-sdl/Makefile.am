@@ -5,7 +5,7 @@ AM_CFLAGS   += @SDL_CFLAGS@
 
 noinst_LIBRARIES = libguidep.a
 
-libguidep_a_SOURCES = inputmode.c menu.c menu_load.c menu_prefs.c menu_tweak.c vkbd.cpp volumecontrol.c
+libguidep_a_SOURCES = inputmode.c menu.c menu_roms.c menu_disks.c menu_prefs.c menu_tweak.c vkbd.cpp volumecontrol.c
 
 noinst_HEADERS = inputmode.h menu.h vkbd.h volumecontrol.h
 

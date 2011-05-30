@@ -18,12 +18,15 @@ extern SDL_Color text_color;
 extern char msg[50];
 extern char msg_status[50];
 
-int prefz (int parametre) {
+int prefz (void) {
 	SDL_Event event;
 
 	if (display == NULL) {
 		gui_init();
 	}
+	
+	sprintf(msg, "%s", " ");
+	sprintf(msg_status, "%s", " ");
 
     pMenu_Surface = SDL_LoadBMP("images/menu_tweak.bmp");
 	int prefsloopdone = 0;
@@ -55,15 +58,13 @@ int prefz (int parametre) {
 	char* p_floppy[]= {"0","100","200","300"};							//3
 	int defaults[]	= {0,0,0,0,0,0,0,0};
 
-//	defaults[0] = changed_prefs.cpu_level;
 	defaults[0] = changed_prefs.cpu_model;
 	if (changed_prefs.address_space_24 != 0) {
-//		if (changed_prefs.cpu_level == 2) { defaults[0] = 4; }
-//		if (changed_prefs.cpu_level == 3) { defaults[0] = 5; }
 		if (changed_prefs.cpu_model == 2) { defaults[0] = 4; }
 		if (changed_prefs.cpu_model == 3) { defaults[0] = 5; }
 	}
-	defaults[1] = changed_prefs.m68k_speed;
+	//defaults[1] = changed_prefs.m68k_speed;
+	defaults[1] = 0;
 	defaults[2] = changed_prefs.chipset_mask;
 	defaults[3] = changed_prefs.chipmem_size;
 	defaults[4] = changed_prefs.fastmem_size;
@@ -83,26 +84,26 @@ int prefz (int parametre) {
 			if (event.type == SDL_QUIT) {
 				prefsloopdone = 1;
 			}
+#if GP2X
 			if (event.type == SDL_JOYBUTTONDOWN) {
-             			switch (event.jbutton.button) {
-#if 0
+       			switch (event.jbutton.button) {
 					case GP2X_BUTTON_UP: menuSelection--; break;
 					case GP2X_BUTTON_DOWN: menuSelection++; break;
 					case GP2X_BUTTON_LEFT: kleft = 1; break;
 					case GP2X_BUTTON_RIGHT: kright = 1; break;
 					case GP2X_BUTTON_SELECT: prefsloopdone = 1; break;
 					case GP2X_BUTTON_B: prefsloopdone = 1; break;
-#endif
 				}
 			}
-      			if (event.type == SDL_KEYDOWN) {
-    				switch (event.key.keysym.sym) {
+#endif
+   			if (event.type == SDL_KEYDOWN) {
+  				switch (event.key.keysym.sym) {
 					case SDLK_ESCAPE:	prefsloopdone = 1; break;
 				 	case SDLK_UP:		menuSelection--; break;
 					case SDLK_DOWN:		menuSelection++; break;
 					case SDLK_LEFT:		kleft = 1; break;
 					case SDLK_RIGHT:	kright = 1; break;
-					case SDLK_b:		prefsloopdone = 1; break;
+					case SDLK_RETURN:	prefsloopdone = 1; break;
 					default: break;
 				}
 			}
@@ -158,17 +159,18 @@ int prefz (int parametre) {
 
 		if (menuSelection < 0) { menuSelection = 8; }
 		if (menuSelection > 8) { menuSelection = 0; }
-	// background
+		
+		// background
 		SDL_BlitSurface (pMenu_Surface,NULL,tmpSDLScreen,NULL);
 
-	// texts
+		// texts
 		int sira = 0;
 		int skipper = 0;
-		for (q=0; q<9; q++) {
+		for (q=0; q<8; q++) {
 			if (menuSelection == q) {
 				text_color.r = 150; text_color.g = 50; text_color.b = 50;
 			}
-			write_text (10,skipper+25+(sira*10),prefs[q]); //
+			write_text (10, skipper+25+(sira*10), prefs[q]); //
 
 			if (q == 0) {	write_text (130, skipper+25+(sira*10), p_cpu[defaults[q]]); }
 			if (q == 1) {
@@ -194,10 +196,10 @@ int prefz (int parametre) {
 			sira++;
 		}
 
-		write_text (25,6,msg); //
-		write_text (25,240,msg_status); //
+		write_text (25, 5, msg); //
+		write_text (25, 230, msg_status); //
 
-		SDL_BlitSurface (tmpSDLScreen,NULL,display,NULL);
+		SDL_BlitSurface (tmpSDLScreen, NULL, display, NULL);
 #ifdef TOUCHUI
 		SDL_TUI_UpdateAll();
 #endif
