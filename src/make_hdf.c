@@ -15,6 +15,10 @@
 
 #include <ctype.h>
 
+#ifdef _WIN32
+#define fseeko fseeko64
+#endif
+
 static void print_help (void)
 {
    fprintf (stderr, "make_hdf <path> <size> [<device>]\n");
