@@ -1057,6 +1057,38 @@ static int graphics_subinit_gl (void)
 
 #endif /* USE_GL */
 
+void setmaintitle (void)
+{
+	TCHAR txt[1000], txt2[500];
+    const char *title = PACKAGE_NAME;
+
+	txt[0] = 0;
+#ifdef INPREC
+	inprec_getstatus (txt);
+#endif
+	if (currprefs.config_window_title[0]) {
+		_tcscat (txt, currprefs.config_window_title);
+		_tcscat (txt, " - ");
+	} else if (config_filename[0]) {
+		_tcscat (txt, "[");
+		_tcscat (txt, config_filename);
+		_tcscat (txt, "] - ");
+	}
+	_tcscat (txt, title);
+	txt2[0] = 0;
+/*	if (mouseactive > 0) {
+		WIN32GUI_LoadUIString (currprefs.win32_middle_mouse ? IDS_WINUAETITLE_MMB : IDS_WINUAETITLE_NORMAL,
+			txt2, sizeof (txt2) / sizeof (TCHAR));
+	}
+*/
+	if (txt2[0]) {
+		_tcscat (txt, " - ");
+		_tcscat (txt, txt2);
+	}
+
+	SDL_WM_SetCaption(txt, txt);
+}
+
 static int graphics_subinit (void)
 {
 #ifdef USE_GL
@@ -2226,36 +2258,4 @@ int target_checkcapslock (int scancode, int *state)
 //        if (scancode == DIK_SCROLL)
 //                *state = host_scrolllockstate;
         return 1;
-}
-
-void setmaintitle (void)
-{
-	TCHAR txt[1000], txt2[500];
-    const char *title = PACKAGE_NAME;
-
-	txt[0] = 0;
-#ifdef INPREC
-	inprec_getstatus (txt);
-#endif
-	if (currprefs.config_window_title[0]) {
-		_tcscat (txt, currprefs.config_window_title);
-		_tcscat (txt, " - ");
-	} else if (config_filename[0]) {
-		_tcscat (txt, "[");
-		_tcscat (txt, config_filename);
-		_tcscat (txt, "] - ");
-	}
-	_tcscat (txt, title);
-	txt2[0] = 0;
-/*	if (mouseactive > 0) {
-		WIN32GUI_LoadUIString (currprefs.win32_middle_mouse ? IDS_WINUAETITLE_MMB : IDS_WINUAETITLE_NORMAL,
-			txt2, sizeof (txt2) / sizeof (TCHAR));
-	}
-*/
-	if (txt2[0]) {
-		_tcscat (txt, " - ");
-		_tcscat (txt, txt2);
-	}
-
-	SDL_WM_SetCaption(txt, txt);
 }
